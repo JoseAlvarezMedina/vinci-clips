@@ -232,6 +232,18 @@ npm run test:e2e
 
 ## Deployment
 
+### 🚀 One‑click local development (Docker Compose)
+
+Prerequisites: Docker Desktop 4.x+, Git.
+
+```bash
+git clone https://github.com/<your-user>/vinci-clips.git
+cd vinci-clips
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+docker compose up -d --build
+
+
 ### Docker Deployment
 
 ```bash

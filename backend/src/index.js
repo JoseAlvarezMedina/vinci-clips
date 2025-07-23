@@ -11,6 +11,7 @@ if (process.env.GCP_SERVICE_ACCOUNT_PATH) {
 const logger = require('./utils/logger');
 const connectDB = require('./db');
 const mainRoutes = require('./routes/index');
+const healthRouter = require('./routes/health'); // <-- import health
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -24,6 +25,9 @@ app.use(express.json());
 
 // Add request logging middleware
 app.use(logger.requestMiddleware);
+
+// Mount health first (optional)
+app.use('/health', healthRouter);
 
 // Mount routes
 app.use('/clips', mainRoutes);

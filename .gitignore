@@ -30,3 +30,7 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw? 
+
+# Allow example envs
+!frontend/.env.example
+!backend/.env.example
