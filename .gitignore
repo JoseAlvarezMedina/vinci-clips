@@ -34,3 +34,4 @@ lerna-debug.log*
 # Allow example envs
 !frontend/.env.example
 !backend/.env.example
+!.env.example
