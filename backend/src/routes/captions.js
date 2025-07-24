@@ -12,6 +12,20 @@ const storage = new Storage({
 });
 const bucket = storage.bucket(process.env.GCP_BUCKET_NAME);
 
+// Initialize Google Cloud Storage only if bucket name is provided
+const bucketName = process.env.GCP_BUCKET_NAME;
+let bucket;
+if (bucketName) {
+  const storage = new Storage({
+    keyFilename: process.env.GCP_SERVICE_ACCOUNT_PATH,
+  });
+  bucket = storage.bucket(bucketName);
+} else {
+  // Warn and defer error handling to the route
+  console.warn('[WARN] GCP_BUCKET_NAME not set: /captions endpoints will return 503');
+}
+
+
 // Caption style presets for TikTok/Reels
 const CAPTION_STYLES = {
     'bold-center': {
@@ -254,6 +268,13 @@ router.get('/styles', (req, res) => {
 
 // POST /captions/generate/:id - Generate captioned video
 router.post('/generate/:id', async (req, res) => {
+      // Fail fast when GCS bucket isn’t configured
+    if (!bucket) {
+     return res.status(503).json({
+       success: false,
+       error: 'Cloud Storage bucket not configured'
+     });
+    }
     try {
         const { id } = req.params;
         const { style = 'bold-center', startTime, endTime } = req.body;
