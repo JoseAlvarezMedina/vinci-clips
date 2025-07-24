@@ -7,23 +7,22 @@ const path = require('path');
 const fs = require('fs');
 
 // Initialize Google Cloud Storage
-const storage = new Storage({
-    keyFilename: process.env.GCP_SERVICE_ACCOUNT_PATH,
-});
-const bucket = storage.bucket(process.env.GCP_BUCKET_NAME);
+const { Storage } = require('@google-cloud/storage');
 
-// Initialize Google Cloud Storage only if bucket name is provided
-const bucketName = process.env.GCP_BUCKET_NAME;
-let bucket;
-if (bucketName) {
-  const storage = new Storage({
-    keyFilename: process.env.GCP_SERVICE_ACCOUNT_PATH,
-  });
-  bucket = storage.bucket(bucketName);
-} else {
-  // Warn and defer error handling to the route
-  console.warn('[WARN] GCP_BUCKET_NAME not set: /captions endpoints will return 503');
+// DEBUG: log the two critical env vars so we can verify they’re set inside the container
+console.log('DEBUG GCP_SERVICE_ACCOUNT_PATH =', process.env.GCP_SERVICE_ACCOUNT_PATH);
+console.log('DEBUG GCP_BUCKET_NAME         =', process.env.GCP_BUCKET_NAME);
+
+let storage, bucket;
+try {
+  // initialize Storage only when we have valid credentials and bucket name
+  storage = new Storage({ keyFilename: process.env.GCP_SERVICE_ACCOUNT_PATH });
+  bucket  = storage.bucket(process.env.GCP_BUCKET_NAME);
+} catch (err) {
+  // if anything goes wrong, print the error instead of crashing immediately
+  console.error('DEBUG failed to init Google Cloud Storage:', err.message);
 }
+
 
 
 // Caption style presets for TikTok/Reels
