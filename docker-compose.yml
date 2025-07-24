@@ -47,7 +47,7 @@ services:
       DB_URL: mongodb://admin:password123@mongodb:27017/vinci-clips?authSource=admin
 
       # Google Cloud (optional for local dev, put dummy values or mount your json)
-      GCP_BUCKET_NAME: ${GCP_BUCKET_NAME}
+      GCP_BUCKET_NAME: dummy-bucket
       GCP_SERVICE_ACCOUNT_PATH: /app/gcp-service-account.json
       GEMINI_API_KEY: ${GEMINI_API_KEY}
 
